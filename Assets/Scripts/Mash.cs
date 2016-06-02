@@ -11,7 +11,11 @@ public class Mash : MonoBehaviour
     float repeatRate = 1f;
     bool start = false;
     bool winBool = false;
+    Sprite princess;
     int count;
+    [SerializeField]
+    GameObject space;
+
 
     [SerializeField]
     GameObject win;
@@ -20,25 +24,14 @@ public class Mash : MonoBehaviour
     Text countText;
 
     [SerializeField]
-    Sprite one;
+    Sprite[] state;
 
     [SerializeField]
-    Sprite two;
-
-    [SerializeField]
-    Sprite three;
-
-    [SerializeField]
-    Sprite four;
-
-    [SerializeField]
-    Sprite five;
-
+    AudioSource[] yawn;
     #endregion
 
     void Update ()
     {
-        ChangeSprite();
         if (!start)
         {
             InvokeRepeating("Fall", 0f, repeatRate);
@@ -50,7 +43,9 @@ public class Mash : MonoBehaviour
             {
                 mashAmmount++;
                 count++;
+                ChangeSprite();
             }
+            space.GetComponent<SpacePulse>().Pulse();
         }
         //Debug.Log(mashAmmount);
 	}
@@ -66,25 +61,32 @@ public class Mash : MonoBehaviour
 
     void ChangeSprite()
     {
-        if (mashAmmount <= 0)
+        if (mashAmmount == 0)
         {
-            gameObject.GetComponent<SpriteRenderer>().sprite = one;
+            princess = state[0];
         }
-        else if (mashAmmount >= 10 && mashAmmount < 20)
+        else if (mashAmmount == 12)
         {
-            gameObject.GetComponent<SpriteRenderer>().sprite = two;
+            mashAmmount = mashAmmount + 3;
+            yawn[0].Play();
+            princess = state[1];
         }
-        else if (mashAmmount >= 20 && mashAmmount < 30)
+        else if (mashAmmount == 25)
         {
-            gameObject.GetComponent<SpriteRenderer>().sprite = three;
+            mashAmmount = mashAmmount + 3;
+            yawn[1].Play();
+            princess = state[2];
         }
-        else if (mashAmmount >= 30 && mashAmmount < 40)
+        else if (mashAmmount == 37)
         {
-            gameObject.GetComponent<SpriteRenderer>().sprite = four;
+            mashAmmount = mashAmmount + 3;
+            yawn[2].Play();
+            princess = state[3];
         }
-        else if (mashAmmount >= 50)
+        else if (mashAmmount == 50)
         {
-            gameObject.GetComponent<SpriteRenderer>().sprite = five;
+            yawn[3].Play();
+            princess = state[4];
             winBool = true;
             countText.text = "You hit space " + count + " times to wake her up!";
             win.SetActive(true);
@@ -93,5 +95,8 @@ public class Mash : MonoBehaviour
             //start = false;
             //Win();
         }
+        gameObject.GetComponent<SpriteRenderer>().sprite = princess;
     }
+
+
 }
